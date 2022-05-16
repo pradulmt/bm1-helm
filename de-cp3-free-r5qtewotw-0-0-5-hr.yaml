@@ -14,7 +14,132 @@ spec:
   interval: 5m0s
   releaseName: de-cp3-free-r5qtewotw-0-0-5
   values:
+    amf:
+      affinity: {}
+      autoscaling:
+        enabled: false
+        maxReplicas: 100
+        minReplicas: 1
+        targetCPUUtilizationPercentage: 80
+      configmap:
+        name: amf-configmap
+      configuration:
+        configuration: "amfName: AMF\nserviceNameList:\n  - namf-comm\n  - namf-evts\n
+          \ - namf-mt\n  - namf-loc\n  - namf-oam\nservedGuamiList:\n  - plmnId:\n
+          \     mcc: 208\n      mnc: 93\n    amfId: cafe00\nsupportTaiList:\n  - plmnId:\n
+          \     mcc: 208\n      mnc: 93\n    tac: 1\nplmnSupportList:\n  - plmnId:\n
+          \     mcc: 208\n      mnc: 93\n    snssaiList:\n      - sst: 1\n        sd:
+          010203\n      - sst: 1\n        sd: 112233\nsupportDnnList:\n  - internet\nsecurity:\n
+          \ integrityOrder:\n    - NIA2\n  cipheringOrder:\n    - NEA0\nnetworkName:\n
+          \ full: free5GC\n  short: free      \nlocality: area1 # Name of the location
+          where a set of AMF, SMF and UPFs are located\nnetworkFeatureSupport5GS:
+          # 5gs Network Feature Support IE, refer to TS 24.501\n  enable: true # append
+          this IE in Registration accept or not\n  imsVoPS: 0 # IMS voice over PS
+          session indicator (uinteger, range: 0~1)\n  emc: 0 # Emergency service support
+          indicator for 3GPP access (uinteger, range: 0~3)\n  emf: 0 # Emergency service
+          fallback indicator for 3GPP access (uinteger, range: 0~3)\n  iwkN26: 0 #
+          Interworking without N26 interface indicator (uinteger, range: 0~1)\n  mpsi:
+          0 # MPS indicator (uinteger, range: 0~1)\n  emcN3: 0 # Emergency service
+          support indicator for Non-3GPP access (uinteger, range: 0~1)\n  mcsi: 0
+          # MCS indicator (uinteger, range: 0~1)\nt3502Value: 720\nt3512Value: 3600\nnon3gppDeregistrationTimerValue:
+          3240\n# retransmission timer for paging message\nt3513:\n  enable: true
+          \    # true or false\n  expireTime: 6s   # default is 6 seconds\n  maxRetryTimes:
+          4 # the max number of retransmission\n# retransmission timer for NAS Registration
+          Accept message\nt3522:\n  enable: true     # true or false\n  expireTime:
+          6s   # default is 6 seconds\n  maxRetryTimes: 4 # the max number of retransmission\n#
+          retransmission timer for NAS Registration Accept message\nt3550:\n  enable:
+          true     # true or false\n  expireTime: 6s   # default is 6 seconds\n  maxRetryTimes:
+          4 # the max number of retransmission\n# retransmission timer for NAS Authentication
+          Request/Security Mode Command message\nt3560:\n  enable: true     # true
+          or false\n  expireTime: 6s   # default is 6 seconds\n  maxRetryTimes: 4
+          # the max number of retransmission\n# retransmission timer for NAS Notification
+          message\nt3565:\n  enable: true     # true or false\n  expireTime: 6s   #
+          default is 6 seconds\n  maxRetryTimes: 4 # the max number of retransmission"
+        logger:
+          AMF:
+            ReportCaller: false
+            debugLevel: info
+          Aper:
+            ReportCaller: false
+            debugLevel: info
+          FSM:
+            ReportCaller: false
+            debugLevel: info
+          NAS:
+            ReportCaller: false
+            debugLevel: info
+          NGAP:
+            ReportCaller: false
+            debugLevel: info
+          OpenApi:
+            ReportCaller: false
+            debugLevel: info
+          PathUtil:
+            ReportCaller: false
+            debugLevel: info
+      image:
+        name: towards5gs/free5gc-amf
+        pullPolicy: IfNotPresent
+      imagePullSecrets: []
+      ingress:
+        annotations: {}
+        enabled: false
+        hosts:
+        - host: chart-example.local
+          paths: []
+        tls: []
+      livenessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 120
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 10
+      name: amf
+      nodeSelector: {}
+      podAnnotations: {}
+      podSecurityContext: {}
+      readinessProbe:
+        failureThreshold: 40
+        initialDelaySeconds: 0
+        periodSeconds: 1
+        successThreshold: 1
+        timeoutSeconds: 1
+      replicaCount: 1
+      resources:
+        limits:
+          cpu: 150m
+          memory: 128Mi
+        requests:
+          cpu: 150m
+          memory: 128Mi
+      securityContext: {}
+      service:
+        name: amf-namf
+        port: 80
+        type: ClusterIP
+      tolerations: []
+      volume:
+        mount: /free5gc/config/
+        name: amf-volume
     global:
+      amf:
+        n2if:
+          ipAddress: 10.100.50.249
+        service:
+          ngap:
+            enabled: false
+            name: amf-n2
+            nodeport: 31412
+            port: 38412
+            protocol: TCP
+            type: NodePort
+      n2network:
+        cidr: 29
+        excludeIP: 10.100.50.254
+        gatewayIP: 10.100.50.254
+        masterIf: ens2f0
+        name: n2network
+        subnetIP: 10.100.50.248
       nrf:
         service:
           name: nrf-nnrf
@@ -38,84 +163,4 @@ spec:
         nodePort: "30017"
         port: 27017
         type: ClusterIP
-    udm:
-      affinity: {}
-      autoscaling:
-        enabled: false
-        maxReplicas: 100
-        minReplicas: 1
-        targetCPUUtilizationPercentage: 80
-      configmap:
-        name: udm-configmap
-      configuration:
-        configuration: |-
-          serviceNameList:
-            - nudm-sdm
-            - nudm-uecm
-            - nudm-ueau
-            - nudm-ee
-            - nudm-pp
-
-          # test data set from TS33501-f60 Annex C.4
-          SuciProfile:
-            - ProtectionScheme: 1 # Protect Scheme: Profile A
-              PrivateKey: c53c22208b61860b06c62e5406a7b330c2b577aa5558981510d128247d38bd1d
-              PublicKey: 5a8d38864820197c3394b92613b20b91633cbd897119273bf8e4a6f4eec0a650
-            - ProtectionScheme: 2 # Protect Scheme: Profile B
-              PrivateKey: F1AB1074477EBCC7F554EA1C5FC368B1616730155E0041AC447D6301975FECDA
-              PublicKey: 0472DA71976234CE833A6907425867B82E074D44EF907DFB4B3E21C1C2256EBCD15A7DED52FCBB097A4ED250E036C7B9C8C7004C4EEDC4F068CD7BF8D3F900E3B4
-        logger:
-          OpenApi:
-            ReportCaller: false
-            debugLevel: info
-          PathUtil:
-            ReportCaller: false
-            debugLevel: info
-          UDM:
-            ReportCaller: false
-            debugLevel: info
-      image:
-        name: towards5gs/free5gc-udm
-        pullPolicy: IfNotPresent
-      imagePullSecrets: []
-      ingress:
-        annotations: {}
-        enabled: false
-        hosts:
-        - host: chart-example.local
-          paths: []
-        tls: []
-      livenessProbe:
-        failureThreshold: 3
-        initialDelaySeconds: 120
-        periodSeconds: 10
-        successThreshold: 1
-        timeoutSeconds: 10
-      name: udm
-      nodeSelector: {}
-      podAnnotations: {}
-      podSecurityContext: {}
-      readinessProbe:
-        failureThreshold: 40
-        initialDelaySeconds: 0
-        periodSeconds: 1
-        successThreshold: 1
-        timeoutSeconds: 1
-      replicaCount: 1
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
-      securityContext: {}
-      service:
-        name: udm-nudm
-        port: 80
-        type: ClusterIP
-      tolerations: []
-      volume:
-        mount: /free5gc/config/
-        name: udm-volume
 
