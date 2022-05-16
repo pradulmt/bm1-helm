@@ -14,6 +14,71 @@ spec:
   interval: 5m0s
   releaseName: de-cp3-free-r5qtewotw-0-0-5
   values:
+    db:
+      enabled: false
+    free5gc:
+      configmap:
+        create: true
+        name: free5gc4udr-configmap
+      configuration:
+        logger:
+          AMF:
+            ReportCaller: true
+            debugLevel: info
+          AUSF:
+            ReportCaller: true
+            debugLevel: info
+          Aper:
+            ReportCaller: true
+            debugLevel: info
+          CommonConsumerTest:
+            ReportCaller: true
+            debugLevel: info
+          FSM:
+            ReportCaller: true
+            debugLevel: info
+          N3IWF:
+            ReportCaller: true
+            debugLevel: info
+          NAS:
+            ReportCaller: true
+            debugLevel: info
+          NGAP:
+            ReportCaller: true
+            debugLevel: info
+          NRF:
+            ReportCaller: true
+            debugLevel: info
+          NamfComm:
+            ReportCaller: true
+            debugLevel: info
+          NamfEventExposure:
+            ReportCaller: true
+            debugLevel: info
+          NsmfPDUSession:
+            ReportCaller: true
+            debugLevel: info
+          NudrDataRepository:
+            ReportCaller: true
+            debugLevel: info
+          OpenApi:
+            ReportCaller: true
+            debugLevel: info
+          PCF:
+            ReportCaller: true
+            debugLevel: info
+          SMF:
+            ReportCaller: true
+            debugLevel: info
+          UDM:
+            ReportCaller: true
+            debugLevel: info
+          UDR:
+            ReportCaller: true
+            debugLevel: info
+          WEBUI:
+            ReportCaller: true
+            debugLevel: info
     global:
       nrf:
         service:
@@ -38,7 +103,7 @@ spec:
         nodePort: "30017"
         port: 27017
         type: ClusterIP
-    pcf:
+    udr:
       affinity: {}
       autoscaling:
         enabled: false
@@ -46,33 +111,24 @@ spec:
         minReplicas: 1
         targetCPUUtilizationPercentage: 80
       configmap:
-        name: pcf-configmap
+        name: udr-configmap
       configuration:
-        configuration: |-
-          pcfName: PCF
-          timeFormat: 2019-01-02 15:04:05
-          defaultBdtRefId: BdtPolicyId-
-          serviceList:
-            - serviceName: npcf-am-policy-control
-            - serviceName: npcf-smpolicycontrol
-              suppFeat: 3fff
-            - serviceName: npcf-bdtpolicycontrol
-            - serviceName: npcf-policyauthorization
-              suppFeat: 3
-            - serviceName: npcf-eventexposure
-            - serviceName: npcf-ue-policy-control
+        configuration: {}
         logger:
-          OpenApi:
+          MongoDBLibrary:
             ReportCaller: false
             debugLevel: info
-          PCF:
+          OpenApi:
             ReportCaller: false
             debugLevel: info
           PathUtil:
             ReportCaller: false
             debugLevel: info
+          UDR:
+            ReportCaller: false
+            debugLevel: info
       image:
-        name: towards5gs/free5gc-pcf
+        name: towards5gs/free5gc-udr
         pullPolicy: IfNotPresent
       imagePullSecrets: []
       ingress:
@@ -88,7 +144,7 @@ spec:
         periodSeconds: 10
         successThreshold: 1
         timeoutSeconds: 10
-      name: pcf
+      name: udr
       nodeSelector: {}
       podAnnotations: {}
       podSecurityContext: {}
@@ -108,11 +164,11 @@ spec:
           memory: 128Mi
       securityContext: {}
       service:
-        name: pcf-npcf
+        name: udr-nudr
         port: 80
         type: ClusterIP
       tolerations: []
       volume:
         mount: /free5gc/config/
-        name: pcf-volume
+        name: udr-volume
 
