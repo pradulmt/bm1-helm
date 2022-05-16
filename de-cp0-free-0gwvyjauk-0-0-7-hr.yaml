@@ -14,72 +14,8 @@ spec:
   interval: 5m0s
   releaseName: de-cp0-free-0gwvyjauk-0-0-7
   values:
-    ausf:
-      affinity: {}
-      autoscaling:
-        enabled: false
-        maxReplicas: 100
-        minReplicas: 1
-        targetCPUUtilizationPercentage: 80
-      configmap:
-        name: ausf-configmap
-      configuration:
-        configuration: "serviceNameList:\n  - nausf-auth      \nplmnSupportList:\n
-          \ - mcc: 208\n    mnc: 93\n  - mcc: 123\n    mnc: 45\ngroupId: ausfGroup001"
-        logger:
-          AUSF:
-            ReportCaller: false
-            debugLevel: info
-          OpenApi:
-            ReportCaller: false
-            debugLevel: info
-          PathUtil:
-            ReportCaller: false
-            debugLevel: info
-      image:
-        name: towards5gs/free5gc-ausf
-        pullPolicy: IfNotPresent
-      imagePullSecrets: []
-      ingress:
-        annotations: {}
-        enabled: false
-        hosts:
-        - host: chart-example.local
-          paths: []
-        tls: []
-      livenessProbe:
-        failureThreshold: 3
-        initialDelaySeconds: 120
-        periodSeconds: 10
-        successThreshold: 1
-        timeoutSeconds: 10
-      name: ausf
-      nodeSelector: {}
-      podAnnotations: {}
-      podSecurityContext: {}
-      readinessProbe:
-        failureThreshold: 40
-        initialDelaySeconds: 0
-        periodSeconds: 1
-        successThreshold: 1
-        timeoutSeconds: 1
-      replicaCount: 1
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
-      securityContext: {}
-      service:
-        name: ausf-nausf
-        port: 80
-        type: ClusterIP
-      tolerations: []
-      volume:
-        mount: /free5gc/config/
-        name: ausf-volume
+    db:
+      enabled: true
     global:
       nrf:
         service:
@@ -99,9 +35,86 @@ spec:
         registry: towards5gs
         tag: 1.0.0
     mongodb:
+      auth:
+        enabled: false
+      fullnameOverride: mongodb
+      persistence:
+        mountPath: /bitnami/mongodb/data/db/
+        size: 6Gi
       service:
         name: mongodb
         nodePort: "30017"
         port: 27017
         type: ClusterIP
+      useStatefulSet: true
+    nrf:
+      affinity: {}
+      autoscaling:
+        enabled: false
+        maxReplicas: 100
+        minReplicas: 1
+        targetCPUUtilizationPercentage: 80
+      configmap:
+        name: nrf-configmap
+      configuration:
+        configuration: |-
+          DefaultPlmnId:
+            mcc: 208
+            mnc: 93
+          serviceNameList:
+            - nnrf-nfm
+            - nnrf-disc
+        logger:
+          MongoDBLibrary:
+            ReportCaller: false
+            debugLevel: info
+          NRF:
+            ReportCaller: false
+            debugLevel: info
+          OpenApi:
+            ReportCaller: false
+            debugLevel: info
+          PathUtil:
+            ReportCaller: false
+            debugLevel: info
+      image:
+        name: towards5gs/free5gc-nrf
+        pullPolicy: IfNotPresent
+      imagePullSecrets: []
+      ingress:
+        annotations: {}
+        enabled: false
+        hosts:
+        - host: chart-example.local
+          paths: []
+        tls: []
+      livenessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 120
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 10
+      name: nrf
+      nodeSelector: {}
+      podAnnotations: {}
+      podSecurityContext: {}
+      readinessProbe:
+        failureThreshold: 40
+        initialDelaySeconds: 0
+        periodSeconds: 1
+        successThreshold: 1
+        timeoutSeconds: 1
+      replicaCount: 1
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      securityContext: {}
+      tolerations: []
+      volume:
+        mount: /free5gc/config/
+        name: nrf-volume
 
