@@ -14,8 +14,6 @@ spec:
   interval: 5m0s
   releaseName: de-cp0-free-0gwvyjauk-0-0-7
   values:
-    db:
-      enabled: true
     global:
       nrf:
         service:
@@ -35,19 +33,12 @@ spec:
         registry: towards5gs
         tag: 1.0.0
     mongodb:
-      auth:
-        enabled: false
-      fullnameOverride: mongodb
-      persistence:
-        mountPath: /bitnami/mongodb/data/db/
-        size: 6Gi
       service:
         name: mongodb
         nodePort: "30017"
         port: 27017
         type: ClusterIP
-      useStatefulSet: true
-    nrf:
+    pcf:
       affinity: {}
       autoscaling:
         enabled: false
@@ -55,30 +46,33 @@ spec:
         minReplicas: 1
         targetCPUUtilizationPercentage: 80
       configmap:
-        name: nrf-configmap
+        name: pcf-configmap
       configuration:
         configuration: |-
-          DefaultPlmnId:
-            mcc: 208
-            mnc: 93
-          serviceNameList:
-            - nnrf-nfm
-            - nnrf-disc
+          pcfName: PCF
+          timeFormat: 2019-01-02 15:04:05
+          defaultBdtRefId: BdtPolicyId-
+          serviceList:
+            - serviceName: npcf-am-policy-control
+            - serviceName: npcf-smpolicycontrol
+              suppFeat: 3fff
+            - serviceName: npcf-bdtpolicycontrol
+            - serviceName: npcf-policyauthorization
+              suppFeat: 3
+            - serviceName: npcf-eventexposure
+            - serviceName: npcf-ue-policy-control
         logger:
-          MongoDBLibrary:
-            ReportCaller: false
-            debugLevel: info
-          NRF:
-            ReportCaller: false
-            debugLevel: info
           OpenApi:
+            ReportCaller: false
+            debugLevel: info
+          PCF:
             ReportCaller: false
             debugLevel: info
           PathUtil:
             ReportCaller: false
             debugLevel: info
       image:
-        name: towards5gs/free5gc-nrf
+        name: towards5gs/free5gc-pcf
         pullPolicy: IfNotPresent
       imagePullSecrets: []
       ingress:
@@ -94,7 +88,7 @@ spec:
         periodSeconds: 10
         successThreshold: 1
         timeoutSeconds: 10
-      name: nrf
+      name: pcf
       nodeSelector: {}
       podAnnotations: {}
       podSecurityContext: {}
@@ -113,8 +107,12 @@ spec:
           cpu: 100m
           memory: 128Mi
       securityContext: {}
+      service:
+        name: pcf-npcf
+        port: 80
+        type: ClusterIP
       tolerations: []
       volume:
         mount: /free5gc/config/
-        name: nrf-volume
+        name: pcf-volume
 
