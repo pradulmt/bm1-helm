@@ -1,0 +1,12 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: dt-cp--free-ythb0dp0c-0-0-5-source
+  namespace: default
+spec:
+  interval: 1m0s
+  ref:
+    branch: master
+  url: https://github.com/pradulmt/bm1-helm
+
