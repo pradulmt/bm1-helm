@@ -1,0 +1,108 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: dt-cp--free-brpdhdh9q-0-0-0-hr
+  namespace: default
+spec:
+  chart:
+    spec:
+      chart: ./dt-cp--free-brpdhdh9q-0-0-0
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: GitRepository
+        name: dt-cp--free-brpdhdh9q-0-0-0-source
+  interval: 5m0s
+  releaseName: dt-cp--free-brpdhdh9q-0-0-0
+  values:
+    ausf:
+      affinity: {}
+      autoscaling:
+        enabled: false
+        maxReplicas: 100
+        minReplicas: 1
+        targetCPUUtilizationPercentage: 80
+      configmap:
+        name: ausf-configmap
+      configuration:
+        configuration: "serviceNameList:\n  - nausf-auth      \nplmnSupportList:\n
+          \ - mcc: 208\n    mnc: 93\n  - mcc: 123\n    mnc: 45\ngroupId: ausfGroup001"
+        logger:
+          AUSF:
+            ReportCaller: false
+            debugLevel: info
+          OpenApi:
+            ReportCaller: false
+            debugLevel: info
+          PathUtil:
+            ReportCaller: false
+            debugLevel: info
+      image:
+        name: towards5gs/free5gc-ausf
+        pullPolicy: IfNotPresent
+      imagePullSecrets: []
+      ingress:
+        annotations: {}
+        enabled: false
+        hosts:
+        - host: chart-example.local
+          paths: []
+        tls: []
+      livenessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 120
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 10
+      name: ausf
+      nodeSelector: {}
+      podAnnotations: {}
+      podSecurityContext: {}
+      readinessProbe:
+        failureThreshold: 40
+        initialDelaySeconds: 0
+        periodSeconds: 1
+        successThreshold: 1
+        timeoutSeconds: 1
+      replicaCount: 1
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      securityContext: {}
+      service:
+        name: ausf-nausf
+        port: 80
+        type: ClusterIP
+      tolerations: []
+      volume:
+        mount: /free5gc/config/
+        name: ausf-volume
+    global:
+      nrf:
+        service:
+          name: nrf-nnrf
+          nodePort: "30800"
+          port: "8000"
+          type: ClusterIP
+      projectName: free5gc
+      sbi:
+        scheme: http
+    initcontainers:
+      busybox:
+        image: busybox
+        tag: 1.32.0
+      curl:
+        image: initcurl
+        registry: towards5gs
+        tag: 1.0.0
+    mongodb:
+      service:
+        name: mongodb
+        nodePort: "30017"
+        port: 27017
+        type: ClusterIP
+
