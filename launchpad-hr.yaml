@@ -1,0 +1,121 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: launchpad-hr
+  namespace: default
+spec:
+  chart:
+    spec:
+      chart: ./launchpad
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: GitRepository
+        name: launchpad-source
+  interval: 5m0s
+  releaseName: launchpad
+  values:
+    externalAddress: null
+    fullnameOverride: ""
+    global:
+      hostAliases: []
+      imagePullSecrets: []
+      ingress:
+        class:
+          name: ha-proxy
+        createClusterRole: false
+        ports:
+        - name: https
+          port: 443
+          protocol: TCP
+          targetPort: 8443
+        - name: mongo
+          port: 8006
+          protocol: TCP
+          targetPort: 8006
+        - name: redis-tunnel
+          port: 8014
+          protocol: TCP
+          targetPort: 8014
+        service:
+          type: LoadBalancer
+      namespace:
+        create: true
+        name: pthattio1
+    grafanafullnameOverride: ""
+    haproxy-ingress:
+      bindPort:
+        http: :8080
+        https: :8443
+      cloudSpecificServiceSpec: {}
+      serviceAnnotations: {}
+    launchpad:
+      affinity: {}
+      capabilities: []
+      coreDir: null
+      fluxcdAdaptor:
+        enabled: false
+        project: default
+      image:
+        imagePullSecrets: []
+        pullPolicy: IfNotPresent
+        repository: artifactory.riftio.com/docker/launchpad/dzs
+        tag: 10.1.2.0.124576
+      nodeSelector: {}
+      ports:
+      - name: rwrest
+        port: 8008
+      - name: rwauth
+        port: 8009
+      - name: rwui
+        port: 8443
+      - name: rwredis
+        port: 8014
+      - name: rwmongo
+        port: 8006
+      primitiveExec:
+        image:
+          pullPolicy: IfNotPresent
+          repository: artifactory.riftio.com/docker/rw-primitive-exec
+          tag: 0.13
+      resources: {}
+      securityContext:
+        enabled: true
+        fsGroup: 2997
+        runAsGroup: 3064
+        runAsUser: 3015
+      service:
+        type: ClusterIP
+      tolerations: []
+      upgradeFrom: 10.1.2.0.124576
+    loki:
+      enabled: false
+      servicePort: 3100
+      serviceScheme: http
+    mongodb:
+      containerSecurityContext:
+        runAsUser: 3015
+      podSecurityContext:
+        fsGroup: 2997
+    nameOverride: ""
+    natsfullnameOverride: ""
+    prometheus:
+      containerSecurityContext:
+        runAsUser: 3015
+      podSecurityContext:
+        fsGroup: 2997
+    prometheusfullnameOverride: ""
+    redis:
+      containerSecurityContext:
+        runAsUser: 3015
+      podSecurityContext:
+        fsGroup: 2997
+    redisfullnameOverride: ""
+    replicaCount: 1
+    storage:
+      capacity: 80Gi
+      localStore: {}
+      manual: {}
+      nfs: {}
+      storageClassName: null
+
