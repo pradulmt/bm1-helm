@@ -1,0 +1,175 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: de-5g--free-py9exoafx-0-0-6-hr
+  namespace: default
+spec:
+  chart:
+    spec:
+      chart: ./de-5g--free-py9exoafx-0-0-6
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: GitRepository
+        name: de-5g--free-py9exoafx-0-0-6-source
+  interval: 5m0s
+  releaseName: de-5g--free-py9exoafx-0-0-6
+  values:
+    db:
+      enabled: false
+    free5gc:
+      configmap:
+        create: true
+        name: free5gc4udr-configmap
+      configuration:
+        logger:
+          AMF:
+            ReportCaller: true
+            debugLevel: info
+          AUSF:
+            ReportCaller: true
+            debugLevel: info
+          Aper:
+            ReportCaller: true
+            debugLevel: info
+          CommonConsumerTest:
+            ReportCaller: true
+            debugLevel: info
+          FSM:
+            ReportCaller: true
+            debugLevel: info
+          N3IWF:
+            ReportCaller: true
+            debugLevel: info
+          NAS:
+            ReportCaller: true
+            debugLevel: info
+          NGAP:
+            ReportCaller: true
+            debugLevel: info
+          NRF:
+            ReportCaller: true
+            debugLevel: info
+          NamfComm:
+            ReportCaller: true
+            debugLevel: info
+          NamfEventExposure:
+            ReportCaller: true
+            debugLevel: info
+          NsmfPDUSession:
+            ReportCaller: true
+            debugLevel: info
+          NudrDataRepository:
+            ReportCaller: true
+            debugLevel: info
+          OpenApi:
+            ReportCaller: true
+            debugLevel: info
+          PCF:
+            ReportCaller: true
+            debugLevel: info
+          SMF:
+            ReportCaller: true
+            debugLevel: info
+          UDM:
+            ReportCaller: true
+            debugLevel: info
+          UDR:
+            ReportCaller: true
+            debugLevel: info
+          WEBUI:
+            ReportCaller: true
+            debugLevel: info
+    global:
+      nrf:
+        service:
+          name: nrf-nnrf
+          nodePort: "30800"
+          port: "8000"
+          type: ClusterIP
+      projectName: free5gc
+      sbi:
+        scheme: http
+    initcontainers:
+      busybox:
+        image: busybox
+        tag: 1.32.0
+      curl:
+        image: initcurl
+        registry: towards5gs
+        tag: 1.0.0
+    mongodb:
+      service:
+        name: mongodb
+        nodePort: "30017"
+        port: 27017
+        type: ClusterIP
+    udr:
+      affinity: {}
+      autoscaling:
+        enabled: false
+        maxReplicas: 100
+        minReplicas: 1
+        targetCPUUtilizationPercentage: 80
+      configmap:
+        name: udr-configmap
+      configuration:
+        configuration: {}
+        logger:
+          MongoDBLibrary:
+            ReportCaller: false
+            debugLevel: info
+          OpenApi:
+            ReportCaller: false
+            debugLevel: info
+          PathUtil:
+            ReportCaller: false
+            debugLevel: info
+          UDR:
+            ReportCaller: false
+            debugLevel: info
+      image:
+        name: towards5gs/free5gc-udr
+        pullPolicy: IfNotPresent
+      imagePullSecrets: []
+      ingress:
+        annotations: {}
+        enabled: false
+        hosts:
+        - host: chart-example.local
+          paths: []
+        tls: []
+      livenessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 120
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 10
+      name: udr
+      nodeSelector: {}
+      podAnnotations: {}
+      podSecurityContext: {}
+      readinessProbe:
+        failureThreshold: 40
+        initialDelaySeconds: 0
+        periodSeconds: 1
+        successThreshold: 1
+        timeoutSeconds: 1
+      replicaCount: 1
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      securityContext: {}
+      service:
+        name: udr-nudr
+        port: 80
+        type: ClusterIP
+      tolerations: []
+      volume:
+        mount: /free5gc/config/
+        name: udr-volume
+
