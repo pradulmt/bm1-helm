@@ -41,7 +41,7 @@ spec:
         cidr: 29
         excludeIP: 10.100.50.230
         gatewayIP: 10.100.50.230
-        masterIf: eth0
+        masterIf: ens2f0
         name: n9network
         subnetIP: 10.100.50.224
       projectName: free5gc
@@ -59,13 +59,13 @@ spec:
       configuration:
         configuration:
           ReportCaller: false
-          debugLevel: info
+          debugLevel: debug
           dnn_list:
           - cidr: 10.1.0.0/17
             dnn: internet
             natifname: n6
       image:
-        name: towards5gs/free5gc-upf
+        name: artifactory.riftio.com/docker-hub/towards5gs/free5gc-upf
         pullPolicy: IfNotPresent
       imagePullSecrets: []
       livenessProbe:
@@ -118,13 +118,13 @@ spec:
       configuration:
         configuration:
           ReportCaller: false
-          debugLevel: info
+          debugLevel: debug
           dnn_list:
           - cidr: 10.1.0.0/17
             dnn: internet
             natifname: n6
       image:
-        name: towards5gs/free5gc-upf
+        name: artifactory.riftio.com/docker-hub/towards5gs/free5gc-upf
         pullPolicy: IfNotPresent
       imagePullSecrets: []
       livenessProbe:
@@ -183,7 +183,7 @@ spec:
             dnn: internet
             natifname: n6
       image:
-        name: towards5gs/free5gc-upf
+        name: artifactory.riftio.com/docker-hub/towards5gs/free5gc-upf
         pullPolicy: IfNotPresent
       imagePullSecrets: []
       livenessProbe:
@@ -241,7 +241,7 @@ spec:
           - cidr: 10.1.0.0/17
             dnn: internet
       image:
-        name: towards5gs/free5gc-upf
+        name: artifactory.riftio.com/docker-hub/towards5gs/free5gc-upf
         pullPolicy: IfNotPresent
       imagePullSecrets: []
       livenessProbe:
