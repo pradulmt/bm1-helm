@@ -7,7 +7,7 @@ metadata:
 spec:
   chart:
     spec:
-      chart: ./bm1-helm/de-5gc-free-4dvfrb2nw-0-0-0
+      chart: ./de-5gc-free-4dvfrb2nw-0-0-0
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: GitRepository
