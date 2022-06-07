@@ -7,12 +7,12 @@ metadata:
 spec:
   chart:
     spec:
-      chart: ./de-5gc-free-4dvfrb2nw-0-0-0
+      chart: /tmp/tmp8ra5gb9z/helm-repo/de-5gc-free-4dvfrb2nw-0-0-0
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: GitRepository
         name: de-5gc-free-4dvfrb2nw-0-0-0-source
-  interval: 5m0s
+  interval: 3m0s
   releaseName: de-5gc-free-4dvfrb2nw-0-0-0
   values:
     global:
@@ -59,7 +59,7 @@ spec:
       configuration:
         configuration:
           ReportCaller: false
-          debugLevel: debug
+          debugLevel: info
           dnn_list:
           - cidr: 10.1.0.0/17
             dnn: internet
@@ -118,7 +118,7 @@ spec:
       configuration:
         configuration:
           ReportCaller: false
-          debugLevel: debug
+          debugLevel: info
           dnn_list:
           - cidr: 10.1.0.0/17
             dnn: internet
